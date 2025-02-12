@@ -29,6 +29,15 @@ const redFoodScoreElement = document.getElementById('redFoodScore');
 const achievementList = document.getElementById('achievementList');
 const scorePopup = document.getElementById('scorePopup');
 
+// 获取摇杆元素
+const joystick = document.getElementById('joystick');
+const joystickHandle = document.getElementById('joystickHandle');
+
+// 摇杆状态
+let joystickActive = false;
+let joystickCenter = { x: 0, y: 0 };
+let joystickRadius = 50; // 摇杆半径
+
 // 初始化游戏
 function initGame() {
     placeFood();
@@ -224,25 +233,51 @@ function placeObstacle() {
     obstacles.push(obstacle);
 }
 
-// 监听键盘事件，控制蛇的移动方向
-document.addEventListener('keydown', event => {
-    if (!gameActive) return;
+// 监听鼠标按下事件
+document.addEventListener('mousedown', event => {
+    joystickActive = true;
+    joystick.style.display = 'flex';
+    joystickCenter = { x: event.clientX, y: event.clientY };
+    joystick.style.left = `${joystickCenter.x - joystickRadius}px`;
+    joystick.style.top = `${joystickCenter.y - joystickRadius}px`;
+    updateJoystick(event);
+});
 
-    switch (event.key) {
-        case 'ArrowUp':
-            if (direction.y === 0) direction = { x: 0, y: -1 };
-            break;
-        case 'ArrowDown':
-            if (direction.y === 0) direction = { x: 0, y: 1 };
-            break;
-        case 'ArrowLeft':
-            if (direction.x === 0) direction = { x: -1, y: 0 };
-            break;
-        case 'ArrowRight':
-            if (direction.x === 0) direction = { x: 1, y: 0 };
-            break;
+// 监听鼠标移动事件
+document.addEventListener('mousemove', event => {
+    if (joystickActive) {
+        updateJoystick(event);
     }
 });
+
+// 监听鼠标松开事件
+document.addEventListener('mouseup', () => {
+    joystickActive = false;
+    joystick.style.display = 'none';
+    joystickHandle.style.transform = 'translate(0, 0)';
+    direction = { x: 0, y: 0 }; // 松开摇杆时，蛇停止移动
+});
+
+// 更新摇杆位置
+function updateJoystick(event) {
+    const dx = event.clientX - joystickCenter.x;
+    const dy = event.clientY - joystickCenter.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const angle = Math.atan2(dy, dx);
+
+    // 限制摇杆手柄在摇杆范围内
+    const handleX = Math.min(joystickRadius, Math.max(-joystickRadius, dx));
+    const handleY = Math.min(joystickRadius, Math.max(-joystickRadius, dy));
+    joystickHandle.style.transform = `translate(${handleX}px, ${handleY}px)`;
+
+    // 根据摇杆位置设置蛇的移动方向
+    if (distance > 10) {
+        direction.x = Math.cos(angle);
+        direction.y = Math.sin(angle);
+    } else {
+        direction = { x: 0, y: 0 };
+    }
+}
 
 // 获取当前速度
 function getCurrentSpeed() {
