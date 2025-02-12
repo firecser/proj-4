@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经典贪吃蛇游戏</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>经典贪吃蛇游戏</h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="instructions">
+        <h2>食物效果说明</h2>
+        <ul>
+            <li><span class="food-color red"></span> 普通食物： +<span id="redFoodScore">1</span> 分</li>
+            <li><span class="food-color blue"></span> 加速食物：    5秒内速度+100%</li>
+            <li><span class="food-color yellow"></span> 减速食物：  5秒内速度-50% </li>
+            <li><span class="food-color purple"></span> 双倍分数食物：  5秒内分数*2</li>  
+            <li><span class="food-color black"></span> 障碍物：撞到后游戏结束</li>
+        </ul>
+    </div>
+    <div id="achievements">
+        <h2>成就系统</h2>
+        <ul id="achievementList"></ul>
+    </div>
+    <div id="scorePopup" class="score-popup"></div>
+    <script src="script.js"></script>
+</body>
+</html> 
